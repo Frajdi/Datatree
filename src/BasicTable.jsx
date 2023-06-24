@@ -25,7 +25,7 @@ const rows = [
 
 export const BasicTable = () => {
   return (
-    <Stack alignItems={'center'} justifyContent={'center'} padding={3}>
+    <Stack alignItems={'center'} justifyContent={'center'} padding={3} height={'50%'}>
       <Table sx={{ maxWidth: 800, border: '1px solid #e0e0e0' }} aria-label="simple table">
         <TableHead>
           <TableRow>

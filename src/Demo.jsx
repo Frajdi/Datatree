@@ -62,6 +62,7 @@ export const isNavigationKey = (key) =>
             size="small"
             startIcon={
               <ExpandMoreIcon
+              color='primary'
                 sx={{
                   transform: `rotateZ(${isExpanded ? 0 : -90}deg)`,
                   transition: (theme) =>
@@ -107,6 +108,7 @@ export function CustomDetailPanelToggle(props) {
       aria-label={isExpanded ? 'Close' : 'Open'}
     >
       <ExpandMoreIcon
+      color='primary'
         sx={{
           transform: `rotateZ(${isExpanded ? 0 : -90}deg)`,
           transition: (theme) =>
@@ -193,19 +195,28 @@ const groupingColDef = {
   renderCell: (params) => <CustomGridTreeDataGroupingCell {...params} />,
 };
 
+
+
 export const TreeDataCustomGroupingColumn = () => {
+  
+  const getDetailPanelContent =({row}) => {
+    if(row.hierarchy.length > 1) return <BasicTable />
+  }
+  
+  const getDetailPanelHeight = React.useCallback(() => 'auto', []);
+
   return (
-    <Stack justifyContent='center' alignItems='center' style={{ height: '50%', width: '100%' }}>
+    <Stack justifyContent='center' alignItems='center'>
       <DataGridPro
         treeData
         rows={rows}
         columns={columns}
         getTreeDataPath={getTreeDataPath}
         groupingColDef={groupingColDef}
-        getDetailPanelContent={({row}) => {
-          if(row.hierarchy.length > 1) return <BasicTable />
-        }}
-        getDetailPanelHeight={({ row }) => 'auto'}
+        getDetailPanelContent={getDetailPanelContent}
+        getDetailPanelHeight={getDetailPanelHeight}
+        showCellVerticalBorder={false}
+        autoHeight
       />
     </Stack>
   );
