@@ -1,4 +1,4 @@
-const dataTreeRows = [
+export const dataTreeRows = [
   {
     hierarchy: ['Order'],
     id: 0,
@@ -25,6 +25,36 @@ const dataTreeRows = [
     productLines: 2,
     id: 2,
   },
+]
+
+export const dataTreeColumns =  [
+  {
+    field: 'number',
+    headerName: 'Number',
+  },
+  { field: 'date', headerName: 'Date', width: 200 },
+  {
+    field: 'code',
+    headerName: 'Code',
+    width: 150,
+  },
+  {
+    field: 'publicInvoiceCode',
+    headerName: 'Public Inv. code', 
+  },
+  {
+    field: 'tenderIdentifyerCode',
+    headerName: 'Tender identif. code', 
+  },
+  {
+    field: 'linkedRowNumber',
+    headerName: 'Linked row nr.', 
+  },
+  {
+    field: 'productLines',
+    headerName: 'Product Lines'
+  }
+
 ]
 
 
