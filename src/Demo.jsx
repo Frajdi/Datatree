@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useState } from 'react';
+
 import {
   DataGridPro,
   useGridApiContext,
@@ -7,10 +9,13 @@ import {
   gridDetailPanelExpandedRowsContentCacheSelector,
   GRID_DETAIL_PANEL_TOGGLE_COL_DEF,
 } from '@mui/x-data-grid-pro';
-import Box from '@mui/material/Box';
+
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
+
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 import BasicTable from './BasicTable';
 
 
@@ -21,40 +26,62 @@ export const isNavigationKey = (key) =>
   key.indexOf('Page') === 0 ||
   key === ' ';
 
-const CustomGridTreeDataGroupingCell = (props) => {
-  const { id, field, rowNode } = props;
-  const apiRef = useGridApiContext();
-  const filteredDescendantCountLookup = useGridSelector(
-    apiRef,
-    gridFilteredDescendantCountLookupSelector,
-  );
-  const filteredDescendantCount = filteredDescendantCountLookup[rowNode.id] ?? 0;
-
-  const handleClick = (event) => {
-    if (rowNode.type !== 'group') {
-      return;
-    }
-
-    apiRef.current.setRowChildrenExpansion(id, !rowNode.childrenExpanded);
-    apiRef.current.setCellFocus(id, field);
-    event.stopPropagation();
-  };
-
-
-  return (
-    <Box sx={{ ml: rowNode.depth * 4 }}>
+  const CustomGridTreeDataGroupingCell = (props) => {
+    const { id, field, rowNode } = props;
+  
+    const [isExpanded, setIsExpanded] = useState(false);
+  
+    const apiRef = useGridApiContext();
+  
+    const filteredDescendantCountLookup = useGridSelector(
+      apiRef,
+      gridFilteredDescendantCountLookupSelector
+    );
+  
+    const filteredDescendantCount =
+      filteredDescendantCountLookup[rowNode.id] ?? 0;
+  
+    const handleClick = (event) => {
+      if (rowNode.type !== "group") {
+        return;
+      }
+  
+      apiRef.current.setRowChildrenExpansion(id, !rowNode.childrenExpanded);
+      apiRef.current.setCellFocus(id, field);
+      setIsExpanded((prev) => !prev);
+    };
+  
+    return (
       <div>
         {filteredDescendantCount > 0 ? (
-          <Button onClick={handleClick} tabIndex={-1} size="small">
-            Order {filteredDescendantCount} 
+          <Button
+            disableRipple={true}
+            onClick={handleClick}
+            sx={{color: 'black'}}
+            tabIndex={-1}
+            size="small"
+            startIcon={
+              <ExpandMoreIcon
+                sx={{
+                  transform: `rotateZ(${isExpanded ? 0 : -90}deg)`,
+                  transition: (theme) =>
+                    theme.transitions.create("transform", {
+                      duration: theme.transitions.duration.shortest,
+                    }),
+                }}
+                fontSize="inherit"
+              />
+            }
+          >
+            Order {filteredDescendantCount}
           </Button>
         ) : (
           <span />
         )}
       </div>
-    </Box>
-  )
-}
+    );
+  };
+  
 
 export function CustomDetailPanelToggle(props) {
   const { id, value: isExpanded } = props;
@@ -70,6 +97,8 @@ export function CustomDetailPanelToggle(props) {
   // If the value is not a valid React element, it means that the row has no detail panel.
   const hasDetail = React.isValidElement(contentCache[id]);
 
+  if(!hasDetail) return
+
   return (
     <IconButton
       size="small"
@@ -79,7 +108,7 @@ export function CustomDetailPanelToggle(props) {
     >
       <ExpandMoreIcon
         sx={{
-          transform: `rotateZ(${isExpanded ? 180 : 0}deg)`,
+          transform: `rotateZ(${isExpanded ? 0 : -90}deg)`,
           transition: (theme) =>
             theme.transitions.create('transform', {
               duration: theme.transitions.duration.shortest,
@@ -166,7 +195,7 @@ const groupingColDef = {
 
 export const TreeDataCustomGroupingColumn = () => {
   return (
-    <div style={{ height: '50%', width: '100%' }}>
+    <Stack justifyContent='center' alignItems='center' style={{ height: '50%', width: '100%' }}>
       <DataGridPro
         treeData
         rows={rows}
@@ -178,6 +207,6 @@ export const TreeDataCustomGroupingColumn = () => {
         }}
         getDetailPanelHeight={({ row }) => 'auto'}
       />
-    </div>
+    </Stack>
   );
 }
